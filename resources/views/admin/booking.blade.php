@@ -125,8 +125,8 @@
                     
 
                     </td>
-                    <td>{{ $data->room->room_title }}</td>
-                    <td>{{ $data->room->price }}</td>
+                    <td>{{ $data->room ? $data->room->room_title : 'N/A' }}</td>
+                    <td>{{ $data->room ? $data->room->price : 'N/A' }}</td>
                     <td>
                         <a href="{{ url('delete_bookings', $data->id) }}" onclick="return confirm('Are you sure to delete?');"  class="delete-trigger">
                             <i class="material-icons delete-icon">delete</i>

@@ -10,7 +10,7 @@
 <body>
     <nav>
         <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Hotel Name</a>
+            <a href="#" class="brand-logo">KAMATH RESIDENCY</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="{{ route('mybookings') }}">My Bookings</a></li>
                 <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>

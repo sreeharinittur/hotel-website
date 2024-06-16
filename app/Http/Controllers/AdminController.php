@@ -59,7 +59,7 @@ class AdminController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric',
                 'wifi' => 'required|in:yes,no',
-                'type' => 'required|string|in:regular,premium,delux',
+                'type' => 'required|string|in:regular,premium,deluxe',
                 'images.*' => 'image|mimes:jpeg,png,jpg|max:2048' // Validate uploaded images
             ]);
     
@@ -79,7 +79,7 @@ class AdminController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $file) {
                     $image = new RoomImage();
-                    $image->room_id = $data->id;
+                    $image->room_id = $room->id;
                     // Store the image in the public storage directory
                     $path = $file->store('room_images', 'public');
                     $image->image_path = $path;
@@ -103,7 +103,7 @@ class AdminController extends Controller
 
         public function bookings()
          {
-            $data=Booking::all();
+            $data = Booking::with('room')->get(); // Eager load the 'room' relationship
             return view('admin.booking',compact('data'));
         }
 

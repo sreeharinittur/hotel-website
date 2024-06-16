@@ -57,7 +57,7 @@
     <nav>
         <div class="nav-wrapper blue darken-3">
             <div class="container">
-                <a href="#" class="brand-logo">Hotel Admin</a>
+                
                 <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#">Dashboard</a></li>
