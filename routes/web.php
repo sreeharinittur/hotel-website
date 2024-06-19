@@ -63,6 +63,9 @@ route::get('/approve_book/{id}', [AdminController::class, 'approve_book']);
 
 route::get('/reject_book/{id}', [AdminController::class, 'reject_book']);
 
+Route::post('/checkAvailability', 'RoomController@checkAvailability')->name('checkAvailability');
+
+
 
 
 
