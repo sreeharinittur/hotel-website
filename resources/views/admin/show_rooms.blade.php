@@ -18,52 +18,90 @@
         .container {
             margin-top: 30px;
         }
-        .card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: scale(1.02);
-        }
-        .card-body {
-            padding: 20px;
-        }
-        .card-title {
-            font-size: 1.75rem;
-            font-weight: 500;
-        }
-        .card-text {
-            font-size: 1rem;
-            margin-bottom: 15px;
-        }
-        .carousel-inner img {
-            border-radius: 15px 15px 0 0;
-            height: 400px;
-            object-fit: cover;
-        }
-        .carousel-control-prev-icon, .carousel-control-next-icon {
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-        }
-        .no-images {
+        .booking-form-wrapper {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            font-size: 1.2rem;
-            color: #888;
-            height: 400px;
+            margin-bottom: 30px;
+        }
+        .booking-form {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
-        h2 {
-            margin-bottom: 40px;
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+            margin-right: 15px;
         }
-        .details-btn {
-            margin-top: 10px;
+        .date-input-group:last-child {
+            margin-right: 0;
+        }
+        .date-input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+        .datepicker {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .datepicker:focus {
+            border-color: #5151e5;
+            box-shadow: 0 0 5px rgba(81, 81, 229, 0.5);
+            outline: none;
+        }
+        .availability-button {
+            background: #5151e5;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .availability-button:hover {
+            background: #4343c5;
+        }
+        .hidden {
+            display: none;
+        }
+        #rooms-wrapper {
+            margin-top: 30px;
+        }
+        #rooms-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .room-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 10px;
+            padding: 20px;
+            text-align: left;
+        }
+        .room-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .room-card p {
+            font-size: 14px;
+            color: #666;
+        }
+        .room-card span {
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
@@ -98,51 +136,140 @@
 
     <div class="container">
         <h2>Rooms</h2>
-        <div class="row">
-            @foreach($rooms as $room)
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div id="carousel{{ $room->id }}" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            @if($room->images->count() > 0)
-                            @foreach($room->images as $key => $image)
-                            <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                                <img src="{{ asset('storage/' . $image->image_path) }}" class="d-block w-100" alt="Room Image">
-                            </div>
-                            @endforeach
-                            @else
-                            <div class="carousel-item active">
-                                <div class="no-images">No images available for this room.</div>
-                            </div>
-                            @endif
-                        </div>
-                        @if($room->images->count() > 0)
-                        <a class="carousel-control-prev" href="#carousel{{ $room->id }}" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carousel{{ $room->id }}" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                        @endif
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $room->room_title }}</h5>
-                        <p class="card-text"><strong>Description:</strong> {{ $room->description }}</p>
-                        <p class="card-text"><strong>Price:</strong> ${{ $room->price }}</p>
-                        <p class="card-text"><strong>Wifi:</strong> {{ $room->wifi ? 'Yes' : 'No' }}</p>
-                        <p class="card-text"><strong>Room Type:</strong> {{ ucfirst($room->room_type) }}</p>
-                        <a href="/room_details/{{ $room->id }}" class="btn btn-primary details-btn">Details</a>
-                    </div>
+        
+        <div class="booking-form-wrapper">
+            <form class="booking-form" id="booking-form" action="{{ route('checkAvailability') }}" method="POST">
+                @csrf
+                <div class="date-input-group">
+                    <label for="checkin">Check-in Date:</label>
+                    <input type="date" id="checkin" name="checkin" class="datepicker">
                 </div>
-            </div>
-            @endforeach
+                <div class="date-input-group">
+                    <label for="checkout">Check-out Date:</label>
+                    <input type="date" id="checkout" name="checkout" class="datepicker">
+                </div>
+                <button type="submit" class="availability-button" id="check-availability">Check Availability</button>
+            </form>
+        </div>
+
+        <div id="rooms-wrapper" class="hidden">
+            <div id="rooms-container"></div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const checkAvailabilityRoute = '{{ route("checkAvailability") }}';
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const response = await fetch(checkAvailabilityRoute, 
+            {
+    method: 'POST',
+    body: formData
+             });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data); 
+                displayAvailableRooms(data);
+            } else {
+                alert('Error checking availability. Please try again.');
+            }
+        });
+
+        function displayAvailableRooms(rooms) {
+    const roomsContainer = document.getElementById('rooms-container');
+    roomsContainer.innerHTML = '';
+
+    rooms.forEach(room => {
+        const roomCard = document.createElement('div');
+        roomCard.classList.add('room-card');
+
+        const carousel = document.createElement('div');
+        carousel.classList.add('carousel', 'slide');
+        carousel.setAttribute('data-ride', 'carousel');
+        carousel.id = `carousel-${room.id}`;
+
+        const carouselInner = document.createElement('div');
+        carouselInner.classList.add('carousel-inner');
+
+        if (room.images && room.images.length > 0) {
+            room.images.forEach((image, index) => {
+                const carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel-item');
+                if (index === 0) carouselItem.classList.add('active');
+
+                const img = document.createElement('img');
+                img.src = image.image_path;
+                img.classList.add('d-block', 'w-100');
+
+                carouselItem.appendChild(img);
+                carouselInner.appendChild(carouselItem);
+            });
+
+            carousel.appendChild(carouselInner);
+
+            const prevButton = document.createElement('a');
+            prevButton.classList.add('carousel-control-prev');
+            prevButton.href = `#carousel-${room.id}`;
+            prevButton.setAttribute('role', 'button');
+            prevButton.setAttribute('data-slide', 'prev');
+            prevButton.innerHTML = `<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>`;
+
+            const nextButton = document.createElement('a');
+            nextButton.classList.add('carousel-control-next');
+            nextButton.href = `#carousel-${room.id}`;
+            nextButton.setAttribute('role', 'button');
+            nextButton.setAttribute('data-slide', 'next');
+            nextButton.innerHTML = `<span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>`;
+
+            carousel.appendChild(prevButton);
+            carousel.appendChild(nextButton);
+        } else {
+            const noImageMessage = document.createElement('p');
+            noImageMessage.textContent = 'No images available';
+            carouselInner.appendChild(noImageMessage);
+        }
+
+        const roomTitle = document.createElement('h3');
+        roomTitle.textContent = room.room_title;
+
+        const roomDescription = document.createElement('p');
+        roomDescription.textContent = room.description;
+
+        const roomPrice = document.createElement('span');
+        roomPrice.textContent = `Price: $${room.price}`;
+
+        const detailsButton = document.createElement('a');
+        detailsButton.href = `/room_details/${room.id}`;
+        detailsButton.textContent = 'View Details';
+        detailsButton.classList.add('availability-button');
+        detailsButton.style.marginTop = '10px';
+        detailsButton.style.display = 'inline-block';
+
+        roomCard.appendChild(carousel);
+        roomCard.appendChild(roomTitle);
+        roomCard.appendChild(roomDescription);
+        roomCard.appendChild(roomPrice);
+        roomCard.appendChild(detailsButton);
+
+        roomsContainer.appendChild(roomCard);
+    });
+
+    document.getElementById('rooms-wrapper').classList.remove('hidden');
+}
+
+    });
+</script>
+
 </body>
 </html>

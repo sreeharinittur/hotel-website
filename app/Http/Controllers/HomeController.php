@@ -46,5 +46,10 @@ class HomeController extends Controller
 
        
     }
+
+    public function menu()
+    {
+        return view('menu');
+    }
     
 }

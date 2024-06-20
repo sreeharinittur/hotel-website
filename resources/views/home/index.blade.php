@@ -67,7 +67,7 @@
                                  <a class="nav-link" href="{{url('rooms')}}">Rooms</a>
                               </li>
                               <li class="nav-item">
-                                 <a class="nav-link" href="gallery.html">Gallery</a>
+                                 <a class="nav-link" href="{{url('menu')}}">Gallery</a>
                               </li>
                               
                               <li class="nav-item">

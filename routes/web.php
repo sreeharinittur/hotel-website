@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\RoomController;
 
 route::get('/',[AdminController::class,'home']);
 
@@ -49,6 +50,8 @@ route::get('/view_rooms',[AdminController::class,'view_rooms']);
 
 route::get('/rooms', [AdminController::class, 'show_rooms'])->name('admin.show_rooms');
 
+route::get('/menu',[HomeController::class,'menu']);
+
 route::get('/room_details/{id}', [HomeController::class, 'room_details'])->name('room_details');
 
 route::post('/add_booking/{id}', [HomeController::class, 'add_booking'])->name('add_booking');
@@ -63,8 +66,7 @@ route::get('/approve_book/{id}', [AdminController::class, 'approve_book']);
 
 route::get('/reject_book/{id}', [AdminController::class, 'reject_book']);
 
-Route::post('/checkAvailability', 'RoomController@checkAvailability')->name('checkAvailability');
-
+Route::post('/checkAvailability', [RoomController::class, 'checkAvailability'])->name('checkAvailability');
 
 
 
